@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import {
-  getDownloadURL,
   getStorage,
+  getDownloadURL,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function CreateListing() {
+  const [files, setFiles] = useState([]);
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const params = useParams();
-  const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -32,6 +32,7 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  console.log(formData);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -75,7 +76,6 @@ export default function CreateListing() {
       setUploading(false);
     }
   };
-
   const storeImage = async (file) => {
     return new Promise((resolve, reject) => {
       const storage = getStorage(app);
@@ -232,7 +232,7 @@ export default function CreateListing() {
                 id="parking"
                 className="w-5"
                 onChange={handleChange}
-                checked={formData.parking}
+                checked={formData.type === "parking"}
               />
               <span>Parking spot</span>
             </div>
@@ -242,7 +242,7 @@ export default function CreateListing() {
                 id="furnished"
                 className="w-5"
                 onChange={handleChange}
-                checked={formData.furnished}
+                checked={formData.type === "furnished"}
               />
               <span>Furnished</span>
             </div>
@@ -252,7 +252,7 @@ export default function CreateListing() {
                 id="offer"
                 className="w-5"
                 onChange={handleChange}
-                checked={formData.offer}
+                checked={formData.type === "offer"}
               />
               <span>Offer</span>
             </div>
@@ -306,7 +306,7 @@ export default function CreateListing() {
                   type="number"
                   id="discountPrice"
                   min="0"
-                  max="10000000"
+                  max="1000"
                   required
                   className="p-3 border border-gray-300 rounded-lg"
                   onChange={handleChange}
@@ -337,8 +337,8 @@ export default function CreateListing() {
               multiple
             />
             <button
-              type="button"
               disabled={uploading}
+              type="button"
               onClick={handleImageSubmit}
               className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
             >
